@@ -1,0 +1,144 @@
+model ModelName
+uses "mmxprs"; !gain access to the Xpress-Optimizer solver
+uses "mmsystem"
+
+n := 5  ! number of variables
+m := 1  ! number of coupling constraints
+
+forward function pricing(c: array(range) of real, D : array(range, range) of real, y : array(range) of real):real
+
+declarations
+	varRange = 1 .. n ! index of x variables
+	constrRange = 1 .. m ! index of constraints on x
+	constrRangeplus1 = 1 .. m+1 ! including the convexity constraint
+	c : array(varRange) of real ! cost of x
+	D : array(constrRange, varRange) of real ! D
+	b0 : array(constrRange) of real ! Dx = b0
+    generatedExtrPt : dynamic array(varRange, range) of real  ! generated extreme points
+    newExtrPt : array(varRange) of real ! newly generated extreme point in the current iteration
+    dualVar_y : array(constrRange) of real ! dual variables for the coupling constraints
+    dualVar_r : real ! dual variable for the convexity constraint
+    numExtrPt : integer ! counting the number of generated extreme points
+    Z : real ! optimal objective value of the pricing problem
+    currentlambda : dynamic array(range) of real ! holding the optimal solution of the current RMP
+    lambda : dynamic array(range) of mpvar ! lambda variable
+end-declarations
+
+c :: [-4, -1, -6, -3, -5]
+D :: [3, 2, 4, 3, 5]
+b0 :: [25]
+
+generatedExtrPt(1,1) := 1
+generatedExtrPt(2,1) := 2
+generatedExtrPt(3,1) := 1
+generatedExtrPt(4,1) := 1
+generatedExtrPt(5,1) := 1
+generatedExtrPt(1,2) := 2
+generatedExtrPt(2,2) := 2
+generatedExtrPt(3,2) := 2
+generatedExtrPt(4,2) := 1
+generatedExtrPt(5,2) := 1
+create(lambda(1))
+create(lambda(2))
+lambda(1)>=0
+lambda(2)>=0
+!end-do  
+
+numExtrPt := m+1 
+
+!!!! Write the objective function of the restricted master problem
+totalCost := 
+
+
+
+!!!! Write coupling constraint
+forall (i in constrRange)
+	couplingConstr(i) := 
+
+
+!!!! Write the convexity constraint
+convexityConstr :=
+
+
+
+repeat 
+	!!!! solve the restricted master problem using the variables that have been generated so far
+	minimize(XPRS_LIN, totalCost)
+	writeln("")
+    writeln("0 if min is solved:", getsysstat)
+    writeln("current obj of RMP = ", getobjval)
+    
+    !!!! get current lambda solution
+    forall (i in 1..numExtrPt) do
+    	currentlambda(i) :=
+    	writeln("lambda(",i,")=", currentlambda(i))
+    end-do
+    
+    !!!! get the dual solution !!!!
+    forall (i in constrRange) do
+    	dualVar_y(i) := 
+    	writeln("dual var of coupling constraint(", i, ")=", dualVar_y(i))
+    end-do
+    dualVar_r := 
+    writeln("dual var of convexity constraint=", dualVar_r)
+    
+    !!!! solve the pricing problem !!!!
+    Z := pricing(c, D, dualVar_y)
+    writeln("min reduced cost=", Z)
+    
+    
+    !!!! If min reduced cost is less than -0.000001, then found a new extreme point !!!!
+    !!!! You need to figure out how to compute the min reduced cost !!!!
+    if (            < -0.000001) then
+    	writeln("found a new extreme point")
+    	
+    	!!!! write you own code here to add the new column to the lambda problem !!!!
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    end-if 
+    
+    !!!! repeat until the min reduced cost is great than -0.000001 !!!!
+until (         > -0.000001)
+	
+	
+	writeln("\nOptimal solution:")
+	
+	
+	!!!! print out the optimal lambda solution !!!!
+	!!!! notice that in the above code, after solving the RMP, you solve the pricing problem, therefore, 
+	!!!! the optimal lambda solution from the RMP is lost. That's why we save the optimal lambda into the
+	!!!! vector currentlambda right after solving the RMP. Use it here
+    ! Write your code here !
+
+
+
+	!!!! print out the optimal x solution !!!!
+	! write your code here !
+	
+	
+		
+		
+		
+    !!!! Pricing function !!!!
+    function pricing(c: array(range) of real, D : array(range,range) of real, y : array(range) of real):real
+
+	!!!! write your pricing function code here!!!!
+	!!!! notice that you need to save the optimal solution of the pricing problem as a new extreme point
+	!!!! in the provided vector newExtrPt
+	! Write your code here !
+	
+	
+	
+	     	
+    end-function
+    
+    
+    
+end-model

@@ -1,0 +1,74 @@
+model Kantorovich
+uses "mmxprs"; !gain access to the Xpress-Optimizer solver
+
+declarations
+	W : integer       	 				! the width of the large rolls
+	m = 4		                        ! the number of different types of small rolls demanded
+	K = 500                             ! number of available large rolls
+	kRange = 1 .. K       			    ! the index of large rolls
+	iRange = 1 .. m      		 		! the index of types of small rolls
+	w : array(iRange) of integer 		! widths of the small rolls
+	b : array(iRange) of integer 		! demand of the small rolls
+	y : array(kRange) of mpvar 			! y(k)=1 if roll k is cut, 0 ow
+	x : array(kRange, iRange) of mpvar  ! x(k,i) number of times an item of width wi is cut on roll k
+end-declarations
+
+initializations from 'kant1.dat'
+	W w b
+end-initializations
+
+
+
+! objective function 
+!!!!!!!!!!!!!!!!! Write your code here !!!!!!!!!!!!!!!!!!
+	 
+
+
+
+! constraints-1
+!!!!!!!!!!!!!!!! Write your code here !!!!!!!!!!!!!!!!!!
+
+
+
+	
+! constraints-2	
+!!!!!!!!!!!!!!! Write your code here !!!!!!!!!!!!!!!!!!!	
+
+
+
+! bounds on variables and integrality constraints 
+! note how to constrain a variable to be integral. you will need to use it in the part 2 of this problem.
+forall (k in kRange, i in iRange) do
+	x(k,i)>=0
+	y(k)>=0
+	y(k)<=1
+	y(k) is_integer
+	x(k,i) is_integer
+end-do
+
+! solve the problem
+!!!!!!!!!!!!!!!!!! Write your code here !!!!!!!!!!!!!!!!!!
+
+
+
+
+! print out the objective value and the nonzero optimal variables
+writeln("obj=",getobjval)
+forall (k in kRange) do
+	if (getsol(y(k))>0) then
+		writeln("y(",k,")=", getsol(y(k)))
+		forall (i in iRange) do
+			if (getsol(x(k,i))>0) then
+				writeln(getsol(x(k,i)), " copies of width ", w(i))
+			end-if	
+		end-do	
+	end-if
+		!!! write your code here to compute the unused width of the paper in this big role = W - total used paper !!!
+		writeln("unused width=", ) !!! write your code to complete the writeln !!!
+		writeln("\n")
+	end-if
+	
+end-do
+
+	
+end-model
